@@ -3071,16 +3071,23 @@ int CToken::GenerateCode( CMemBuf *srcbuf, char *oname, int mode )
 		PutCS( TYPE_PROGCMD, 0, EXFLG_1 );
 		PutCS( TYPE_LABEL, i, 0 );
 
-		if ( cg_debug ) {
-			PutDI();
-		}
-		if (( cg_debug )||( cg_putvars )) {
-			PutDIVars();
-		}
-		if ( cg_debug ) {
-			PutDILabels();
-			PutDIParams();
-		}
+		/* mod by Nou Start
+			if ( cg_debug ) {
+				PutDI();
+			}
+			if (( cg_debug )||( cg_putvars )) {
+				PutDIVars();
+			}
+			if ( cg_debug ) {
+				PutDILabels();
+				PutDIParams();
+			}
+		*/
+		PutDIVars();
+		PutDILabels();
+		PutDIParams();
+		// mod by Nou END
+
 		PutDI( -1, 0, 0 );								// デバッグ情報終端
 
 		sz_hed = sizeof(HSPHED);
