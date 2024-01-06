@@ -110,21 +110,21 @@
 	})
 ```
 ```lua
-	--非数组读
-	varName[0]				-- Hsp: varName
-	--非数组写
-	varName = 100			-- Hsp: varName = 100
+	--非数组读		Hsp: varName
+	varName[0]
+	--非数组写		Hsp: varName = 100
+	varName = 100	
 	
-	--一维数组读		
-	varName[10]				-- Hsp: varName(10)
-	--一维数组写		
-	varName[10]	= 100		-- Hsp: varName(10) = 100
+	--一维数组读		Hsp: varName(10)
+	varName[10]				
+	--一维数组写		Hsp: varName(10) = 100
+	varName[10]	= 100		
 
-	--多维数组读
-	varName[{5, 10}]		-- Hsp: varName(5, 10)
-	--多维数组写
-	varName[{5, 10}] = 100	-- Hsp: varName(5, 10) = 100
+	--多维数组读		Hsp: varName(5, 10)
+	varName[{5, 10}]		
+	--多维数组写		Hsp: varName(5, 10) = 100
+	varName[{5, 10}] = 100	
 
-	--快速访问函数
-	funName(prm1, prm2)		-- Hsp: funName prm1, prm2
+	--快速访问函数	Hsp: funName prm1, prm2
+	funName(prm1, prm2)
 ```
