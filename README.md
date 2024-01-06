@@ -118,13 +118,13 @@
 	--一维数组读		Hsp: varName(10)
 	varName[10]				
 	--一维数组写		Hsp: varName(10) = 100
-	varName[10]	= 100		
+	varName[10] = 100		
 
 	--多维数组读		Hsp: varName(5, 10)
 	varName[{5, 10}]		
 	--多维数组写		Hsp: varName(5, 10) = 100
 	varName[{5, 10}] = 100	
 
-	--快速访问函数	Hsp: funName prm1, prm2
+	--快速访问函数		Hsp: funName prm1, prm2
 	funName(prm1, prm2)
 ```
