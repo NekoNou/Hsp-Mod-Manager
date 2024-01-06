@@ -22,6 +22,7 @@ using namespace std;
 #include "hsp3config.h"
 #include "hsp3int.h"
 
+#include "hspModManager.h"
 /*------------------------------------------------------------*/
 /*
 		system data
@@ -1279,7 +1280,7 @@ char *code_getvptr( PVal **pval, int *size )
 */
 /*------------------------------------------------------------*/
 
-static void customstack_delete( STRUCTDAT *st, char *stackptr )
+void customstack_delete( STRUCTDAT *st, char *stackptr )
 {
 	//	custom command stack delete
 	//
@@ -1340,7 +1341,7 @@ static void cmdfunc_gosub( unsigned short *subr, unsigned short *retpc )
 	code_setpc( subr );
 }
 #else
-static int cmdfunc_gosub( unsigned short *subr )
+int cmdfunc_gosub( unsigned short *subr )
 {
 	//		gosub execute
 	//
@@ -1354,6 +1355,14 @@ static int cmdfunc_gosub( unsigned short *subr )
 	mcs = subr;
 	code_next();
 
+	int labelId = getLabelIdBySbr(subr);
+	if (!onGosub(labelId))
+	{
+		onSubReturn(labelId);
+		cmdfunc_return();
+		return RUNMODE_RUN;
+	}
+
 	//		gosub内で呼び出しを完結させる
 	//
 	while(1) {
@@ -1362,6 +1371,7 @@ static int cmdfunc_gosub( unsigned short *subr )
 #endif
 		if ( GetTypeInfoPtr( type )->cmdfunc( val ) ) {	// タイプごとの関数振り分け
 			if ( hspctx->runmode == RUNMODE_RETURN ) {
+				onSubReturn(labelId);
 				cmdfunc_return();
 				break;
 			} else {
@@ -1381,7 +1391,7 @@ static int cmdfunc_gosub( unsigned short *subr )
 #endif
 
 
-static int code_callfunc( int cmd )
+int code_callfunc( int cmd )
 {
 	//	ユーザー拡張命令を呼び出す
 	//
@@ -1392,10 +1402,17 @@ static int code_callfunc( int cmd )
 
 	st = &hspctx->mem_finfo[cmd]; 
 
-	size = sizeof(HSPROUTINE) + st->size;
-	r = (HSPROUTINE *)StackPushSize( TYPE_EX_CUSTOMFUNC, size );
-	p = (char *)(r+1);
-	code_expandstruct( p, st, CODE_EXPANDSTRUCT_OPT_NONE );			// スタックの内容を初期化
+	if (isCallByLua())
+	{
+		r = doCallByLua();
+		p = (char*)(r + 1);
+	}
+	else {
+		size = sizeof(HSPROUTINE) + st->size;
+		r = (HSPROUTINE*)StackPushSize(TYPE_EX_CUSTOMFUNC, size);
+		p = (char*)(r + 1);
+		code_expandstruct(p, st, CODE_EXPANDSTRUCT_OPT_NONE);			// スタックの内容を初期化
+	}
 
 	r->oldtack = hspctx->prmstack;				// 以前のスタックを保存
 	hspctx->prmstack = (void *)p;				// 新規スタックを設定
@@ -1406,6 +1423,13 @@ static int code_callfunc( int cmd )
 
 	mcs = (unsigned short *)( hspctx->mem_mcs + (hspctx->mem_ot[ st->otindex ]) );
 	code_next();
+
+	if (!onFunction(cmd))
+	{
+		onFunReturn(cmd);
+		cmdfunc_return();
+		return RUNMODE_RUN;
+	}
 
 	//		命令内で呼び出しを完結させる
 	//
@@ -1419,6 +1443,7 @@ static int code_callfunc( int cmd )
 				throw HSPERR_NONE;
 			}
 			if ( hspctx->runmode == RUNMODE_RETURN ) {
+				onFunReturn(cmd);
 				cmdfunc_return();
 				break;
 			} else {
@@ -1712,7 +1737,7 @@ static int cmdfunc_default( int cmd )
 }
 
 
-static int cmdfunc_custom( int cmd )
+int cmdfunc_custom( int cmd )
 {
 	//	custom command execute
 	//
@@ -1961,8 +1986,16 @@ static int cmdfunc_prog( int cmd )
 	switch( cmd ) {							// サブコマンドごとの分岐
 
 	case 0x00:								// goto
-		mcs = code_getlb();
+		if (onGoto(val))
+		{
+			mcs = code_getlb();
+		}
+		else
+		{
+			code_getlb();
+		}
 		code_next();
+		
 		break;
 
 	case 0x01:								// gosub
@@ -3007,6 +3040,8 @@ void code_bye( void )
 
 int code_execcmd( void )
 {
+	initModManager(mem_di_val, hspctx);
+
 	//		命令実行メイン
 	//
 	int i;

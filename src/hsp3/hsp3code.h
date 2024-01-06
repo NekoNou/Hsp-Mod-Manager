@@ -1,3 +1,4 @@
+#pragma once
 
 //
 //	hsp3code.cpp header
@@ -21,7 +22,10 @@ void code_setpc( const unsigned short *pc );
 void code_setpci( const unsigned short *pc );
 void code_call(const unsigned short *pc);
 void code_callback(const unsigned short *pc);
+void customstack_delete(STRUCTDAT* st, char* stackptr);
 void cmdfunc_return( void );
+int cmdfunc_gosub(unsigned short* subr);
+int code_callfunc(int cmd);
 unsigned short *code_getpcbak( void );
 
 int code_execcmd( void );
@@ -69,6 +73,8 @@ void code_setvs( PVal *pval, APTR aptr, int type, void *ptr, int size, int subid
 char *code_stmpstr( char *src );
 char *code_stmp( int size );
 char *code_getsptr( int *type );
+
+int cmdfunc_custom(int cmd);
 
 int code_debug_init( void );
 int code_getdebug_line( void );
