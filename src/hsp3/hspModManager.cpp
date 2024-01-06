@@ -610,7 +610,7 @@ int callGosub(lua_State* L) {
 		return 0;
 	}
 
-	cmdfunc_gosub((unsigned short*)(hspctx->mem_mcs + (hspctx->mem_ot[id])));
+	code_call((unsigned short*)(hspctx->mem_mcs + (hspctx->mem_ot[id])));
 	return 0;
 }
 
