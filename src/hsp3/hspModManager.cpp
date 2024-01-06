@@ -12,6 +12,7 @@
 
 #include "hspModManager.h"
 #include "win32gui/lua.hpp"
+#include <algorithm>
 
 #define strp(dsptr) &hspctx->mem_mds[dsptr]
 
@@ -107,7 +108,7 @@ void initLua() {
 	lua_pushcfunction(L, callGosub);
 	lua_setfield(L, -2, "callGosub");
 	lua_pushcfunction(L, callFunction);
-	lua_setfield(L, -2, "callFunction");	
+	lua_setfield(L, -2, "callFunction");
 	lua_pushcfunction(L, createVarParam);
 	lua_setfield(L, -2, "createVarParam");
 
@@ -626,10 +627,13 @@ int createVarParam(lua_State* L) {
 		return 0;
 	}
 
+	string name = lua_tostring(L, 1);
+	transform(name.begin(), name.end(), name.begin(), tolower);
+
 	lua_createtable(L, 2, 0);
 
 	lua_pushinteger(L, 1);
-	lua_pushstring(L, lua_tostring(L, 1));
+	lua_pushstring(L, name.c_str());
 	lua_settable(L, -3);
 
 	lua_pushinteger(L, 2);
@@ -798,6 +802,7 @@ static int getId(const char* type, unordered_map<string, int> map) {
 	}
 
 	string name = lua_tostring(L, 1);
+	transform(name.begin(), name.end(), name.begin(), tolower);
 	if (!map.count(name))
 	{
 		luaL_error(L, ("incorrect argument 1: no " + tip + " [" + name + "]").c_str());
@@ -924,7 +929,10 @@ HSPROUTINE* initFunParams(int id) {
 		{
 			lua_pushinteger(L, 1);
 			lua_gettable(L, 2 + i);
-			int id = varNameToId[lua_tostring(L, -1)];
+
+			string name = lua_tostring(L, -1);
+			transform(name.begin(), name.end(), name.begin(), tolower);
+			int id = varNameToId[name];
 
 			lua_pushinteger(L, 2);
 			lua_gettable(L, 2 + i);
