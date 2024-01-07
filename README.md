@@ -1,16 +1,17 @@
+This document was translated by deepl. The original [Chinese version](README_ZH.md).
 # Hsp Mod Manager
-一个修改过的HSP3虚拟机，可以讲Lua脚本注入Hsp程序。旨在为Hsp游戏提供跨版本的MOD功能。
+A modified HSP3 VM that injects Lua scripts into Hsp programs. Designed to provide cross version modding capabilities for Hsp games.
 
 # 安装
-1. [下载](https://github.com/NekoNou/OpenHSP?tab=readme-ov-file)Hmm并解压
-2. 编译一个特别的start.ax（因为默认不附带标签名），方法有如下两种
-   - 使用参数-d编译（注意会附带工程路径）
-   - [下载](https://github.com/NekoNou/OpenHSP?tab=readme-ov-file)hsp36.zip并解压，复制hmm中的hspcmp.dll到hsp36，然后编译start.ax即可
-3. 复制hmm中的lua51.dll， Hsp Mod Manager.exe，mod文件夹到start.ax目录
-4. 运行Hsp Mod Manager.exe
+1. [Download](https://github.com/NekoNou/OpenHSP?tab=readme-ov-file) Hmm and unzip
+2. Compile a special start.ax (since it doesn't come with label name by default) in one of the following two ways
+   - Compile with the -d parameter (note that it will be accompanied by the project path)
+   - [Download](https://github.com/NekoNou/OpenHSP?tab=readme-ov-file) hsp36.zip and unzip it, copy hspcmp.dll from hmm to hsp36, and then compile start.ax
+3. Copy lua51.dll, Hsp Mod Manager.exe, and the mod folder from hmm to the start.ax directory.
+4. Run Hsp Mod Manager.exe
 
-# 创建MOD
-在mod里新建文件夹，命名为MOD名。在这个文件夹里新建init.lua，输入如下内容
+# Creating Mods
+Create a new folder in the mod and name it mod name. In this folder create a new init.lua and enter the following
 
 ```lua
 	LoadMod({
@@ -23,14 +24,13 @@
     	},
 	})
 ```
-- modName为mod名，最好和文件夹名一致
-- requireList代表此mod依赖的mod
-  - hmm会把基础mod中所有全局变量，加载到prefix中
-  - 如果prefix为空，则会加载到全局环境
-- fileList代表此mod的文件，hmm会一次加载
-  - prefix作用和上面一样
+- modName is the name of the mod, preferably the same as the folder name.
+- requireList represents the mods that this mod depends on.
+  - hmm will load all global variables in the base mod into prefix
+  - If prefix is empty, it will be loaded into the global environment of this mod
+- fileList represents the files for this mod, hmm will load them in order after all dependencies are loaded.
 
-# 注入脚本
+# Injecting Scripts
 ```
 	bool Hsp.hookGoto(funName, fun, index)
 	bool Hsp.hookGosub(funName, fun, index)
@@ -46,15 +46,15 @@
 
 	end)
 ```
-- funName为要注入到的函数
-- fun为要注入的脚本
-  - 注入到Function和FunReturn的脚本可以获得参数
-  - 可以获得的参数类型有int，double，str
-- index为运行此脚本的优先级，越小越优先，默认为0
-- 返回false时不会执行注入到此位置的其他脚本
-  - 注入到Goto，Gosub和Function的脚本返回false时可以让hsp程序直接返回
+- funName is the function to be injected into
+- fun is the script to be injected
+  - Scripts injected into Function and FunReturn can get parameters
+  - The types of parameters that can be obtained are int, double, str
+- index is the priority of running this script, the smaller the priority, the default is 0
+- Returning false will not execute other scripts injected into this location
+  - Scripts injected into Goto, Gosub, and Function that return false can have the hsp program directly return
 
-# 读写变量
+# Read and write variables
 ```lua
 	Hsp.read(varName, ...)
 	Hsp.write(varName, value, ...)
@@ -62,30 +62,30 @@
 	Hsp.read("foo", 5, 10) 				--Hsp: foo(5,10)
 	Hsp.write("bar", 100, 5, 10, 15) 	--Hsp: bar(5,10,15) = 100
 ```
-- 支持读写int，double和str
-- 索引没有边界检查
+- Supports reading and writing int, double and str.
+- Indexing without boundary checking
 
-# 读写参数
+# Read and write parameters
 ```lua
 	Hsp.readParams(paramIndex)
 	Hsp.writeParams(paramIndex, value)
 ```
-- index从1开始
+- index starts at 1
 
-# 读写系统变量
+# Read and write system variables
 ```lua
 	Hsp.readSysVar(varName)
 	Hsp.writeSysVar(varName, value)
 ```
-- varName可以是cnt、stat、refstr、refdval
-- 其中stat、refstr、refdval是int、str、double型的返回值
+- varName can be cnt, stat, refstr, refdval
+- where stat, refstr, refdval are return values of type int, str, double
 
-# 调用Gosub
+# Call Gosub
 ```lua
 	Hsp.callGosub(labelName)
 ```
 
-# 调用函数
+# call function
 ```lua
 	Hsp.callFunction(funName, ...)
 ```
@@ -95,9 +95,9 @@
 
 	Hsp.callFunction("FunA", 10, 10.10, "hello world")
 ```
-- 可以传递的参数类型有int，double，str
+- The types of parameters that can be passed are int, double, str
 
-# 快速访问变量、函数
+# Quick access to variables, functions
 ```lua
 	QuickAccess.regVar({
 		varName1,
@@ -110,21 +110,21 @@
 	})
 ```
 ```lua
-	--非数组读		Hsp: varName
+	--non-array read		Hsp: varName
 	varName[0]
-	--非数组写		Hsp: varName = 100
+	--non-array write		Hsp: varName = 100
 	varName = 100	
 	
-	--一维数组读		Hsp: varName(10)
+	--One-dimensional array read		Hsp: varName(10)
 	varName[10]				
-	--一维数组写		Hsp: varName(10) = 100
+	--One-dimensional array write		Hsp: varName(10) = 100
 	varName[10] = 100		
 
-	--多维数组读		Hsp: varName(5, 10)
+	--multidimensional array read		Hsp: varName(5, 10)
 	varName[{5, 10}]		
-	--多维数组写		Hsp: varName(5, 10) = 100
+	--Multi-dimensional arrays write		Hsp: varName(5, 10) = 100
 	varName[{5, 10}] = 100	
 
-	--快速访问函数		Hsp: funName prm1, prm2
+	--Quick Access Functions		Hsp: funName prm1, prm2
 	funName(prm1, prm2)
 ```
