@@ -2,7 +2,7 @@ This document was translated by deepl. The original [Chinese version](README_ZH.
 # Hsp Mod Manager
 A modified HSP3 VM that injects Lua scripts into Hsp programs. Designed to provide cross version modding capabilities for Hsp games.
 
-# 安装
+# Install
 1. [Download](https://github.com/NekoNou/OpenHSP?tab=readme-ov-file) Hmm and unzip
 2. Compile a special start.ax (since it doesn't come with label name by default) in one of the following two ways
    - Compile with the -d parameter (note that it will be accompanied by the project path)
@@ -80,12 +80,12 @@ Create a new folder in the mod and name it mod name. In this folder create a new
 - varName can be cnt, stat, refstr, refdval
 - where stat, refstr, refdval are return values of type int, str, double
 
-# Call Gosub
+# Call gosub
 ```lua
 	Hsp.callGosub(labelName)
 ```
 
-# call function
+# Call function
 ```lua
 	Hsp.callFunction(funName, ...)
 ```
@@ -110,9 +110,9 @@ Create a new folder in the mod and name it mod name. In this folder create a new
 	})
 ```
 ```lua
-	--non-array read		Hsp: varName
+	--non-array read			Hsp: varName
 	varName[0]
-	--non-array write		Hsp: varName = 100
+	--non-array write			Hsp: varName = 100
 	varName = 100	
 	
 	--One-dimensional array read		Hsp: varName(10)
@@ -122,7 +122,7 @@ Create a new folder in the mod and name it mod name. In this folder create a new
 
 	--multidimensional array read		Hsp: varName(5, 10)
 	varName[{5, 10}]		
-	--Multi-dimensional arrays write		Hsp: varName(5, 10) = 100
+	--Multi-dimensional arrays write	Hsp: varName(5, 10) = 100
 	varName[{5, 10}] = 100	
 
 	--Quick Access Functions		Hsp: funName prm1, prm2
