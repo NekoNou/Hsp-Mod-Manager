@@ -27,12 +27,13 @@ Hmm.list = { {}, {}, {}, {}, {} }
 local hookList = Hmm.list
 
 local curParams = nil
+local noParam = {}
 local onHsp = function(index)
     return function(id, params)
         local oldParams = params
         curParams = params
         for key, fun in pairs(hookList[index][id]) do
-            if fun[2](params and unpack(params)) == false then
+            if fun[2](unpack(params or noParam)) == false then
                 curParams = oldParams
                 return false
             end
