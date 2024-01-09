@@ -32,7 +32,7 @@ local onHsp = function(index)
         local oldParams = params
         curParams = params
         for key, fun in pairs(hookList[index][id]) do
-            if fun[2](unpack(params)) == false then
+            if fun[2](params and unpack(params)) == false then
                 curParams = oldParams
                 return false
             end
