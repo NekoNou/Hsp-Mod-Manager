@@ -1,8 +1,8 @@
 local loadedMod = {}
 local delayLoadMod = {}
-local modEnvMt = { __index = QuickAccess._index, __newindex = QuickAccess._newindex}
+local modEnvMt = { __index = QuickAccess._index, __newindex = QuickAccess._newindex }
 
-local loadSrc = function(path, env)
+LoadSrc = function(path, env)
     local code, errorMsg = loadfile(path, "bt", env);
     if (code ~= nil) then
         code()
@@ -35,10 +35,10 @@ local doLoadMod = function(modInfo)
 
     for index, srcInfo in ipairs(modInfo.fileList) do
         if (srcInfo.prefix == "" or srcInfo.prefix == nil) then
-            loadSrc(modInfo.path .. "/" .. srcInfo.path, modInfo.env)
+            LoadSrc(modInfo.path .. "/" .. srcInfo.path, modInfo.env)
         else
             modInfo.env[srcInfo.prefix] = {}
-            loadSrc(modInfo.path .. "/" .. srcInfo.path, modInfo.env[srcInfo.prefix])
+            LoadSrc(modInfo.path .. "/" .. srcInfo.path, modInfo.env[srcInfo.prefix])
         end
     end
 
@@ -62,6 +62,9 @@ end
 
 local loadMods = function()
     local dirinfo = io.popen("dir mod /b")
+
+    if not dirinfo then return end
+
     while true do
         local modPath = dirinfo:read("*l")
         if (modPath == nil) then break end
@@ -102,7 +105,7 @@ LoadMod = function(modInfo)
     doLoadMod(modInfo)
 end
 
-GetModInfo = function (modName)
+GetModInfo = function(modName)
     return loadedMod[modName]
 end
 
