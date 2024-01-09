@@ -1,11 +1,11 @@
 QuickAccess = {}
 
 QuickAccess._index = function(env, key)
-    if not rawget(env, "MOD_INFO") then
+    if not rawget(env, "ModInfo") then
         return _G[key]
     end
 
-    local qaVarList = rawget(env.MOD_INFO, "qaVarList")
+    local qaVarList = rawget(env.ModInfo, "qaVarList")
     if qaVarList then
         if qaVarList[key] then
             local qaVar = {}
@@ -29,7 +29,7 @@ QuickAccess._index = function(env, key)
         end
     end
 
-    local qaFunList = rawget(env.MOD_INFO, "qaFunList")
+    local qaFunList = rawget(env.ModInfo, "qaFunList")
     if qaFunList then
         if qaFunList[key] then
             return function(...)
@@ -42,12 +42,12 @@ QuickAccess._index = function(env, key)
 end
 
 QuickAccess._newindex = function(env, key, value)
-    if not rawget(env, "MOD_INFO") then
+    if not rawget(env, "ModInfo") then
         rawset(env, key, value)
         return
     end
 
-    local qaVarList = env.MOD_INFO.qaVarList
+    local qaVarList = env.ModInfo.qaVarList
     if qaVarList then
         if qaVarList[key] then
             Hsp.write(key, value)
@@ -60,11 +60,11 @@ end
 
 QuickAccess.regVar = function(list)
     local env = getfenv(2)
-    local map = env.MOD_INFO.qaVarList
+    local map = env.ModInfo.qaVarList
 
     if not map then
-        env.MOD_INFO.qaVarList = {}
-        map = env.MOD_INFO.qaVarList
+        env.ModInfo.qaVarList = {}
+        map = env.ModInfo.qaVarList
     end
 
     for index, value in ipairs(list) do
@@ -74,11 +74,11 @@ end
 
 QuickAccess.regFun = function(list)
     local env = getfenv(2)
-    local map = env.MOD_INFO.qaFunList
+    local map = env.ModInfo.qaFunList
 
     if not map then
-        env.MOD_INFO.qaFunList = {}
-        map = env.MOD_INFO.qaFunList
+        env.ModInfo.qaFunList = {}
+        map = env.ModInfo.qaFunList
     end
 
     for index, value in ipairs(list) do

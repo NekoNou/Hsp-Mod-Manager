@@ -30,8 +30,8 @@ local doLoadMod = function(modInfo)
         end
     end
 
-    modInfo.env.MOD_NAME = modInfo.modName
-    modInfo.env.MOD_INFO = modInfo
+    modInfo.env.ModName = modInfo.modName
+    modInfo.env.ModInfo = modInfo
 
     for index, srcInfo in ipairs(modInfo.fileList) do
         if (srcInfo.prefix == "" or srcInfo.prefix == nil) then
