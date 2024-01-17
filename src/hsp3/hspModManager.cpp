@@ -191,9 +191,10 @@ void initHsp(unsigned char* mem_di_val)
 
 	lua_pop(L, 1);
 
-	regedGoto = new bool[id + 1] {0};
-	regedGosub = new bool[id + 1] {0};
-	regedSubReturn = new bool[id + 1] {0};
+	int labelNum = hspctx->hsphed->max_ot / 4;
+	regedGoto = new bool[labelNum] {0};
+	regedGosub = new bool[labelNum] {0};
+	regedSubReturn = new bool[labelNum] {0};
 
 	regedFunction = new bool[funNum] {0};
 	regedFunReturn = new bool[funNum] {0};
